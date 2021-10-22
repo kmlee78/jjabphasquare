@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def fs_detail(request):
+    return render(request, "fs/index.html")

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "chart",
     "fs",
     "community",
+    "strategy",
 ]
 
 MIDDLEWARE = [
