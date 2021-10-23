@@ -5,10 +5,12 @@ import pandas as pd
 import plotly.graph_objects as go
 
 from .models import ChartModel
+from .forms import ChartForm
 
 
 def chart_page(request):
-    return render(request, "chart/index.html")
+    chart_form = ChartForm()
+    return render(request, "chart/index.html", {"form": chart_form})
 
 
 def chart_detail(request, stock_code):
