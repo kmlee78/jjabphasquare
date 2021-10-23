@@ -4,15 +4,19 @@ import FinanceDataReader as fdr
 import pandas as pd
 import plotly.graph_objects as go
 
+from .models import ChartModel
+
 
 def chart_page(request):
     return render(request, "chart/index.html")
 
 
-def chart_detail(request):
+def chart_detail(request, stock_code):
+    corp = ChartModel.objects.get(stock_code=stock_code)
+
     today = pd.Timestamp.today()
     start_point = today - pd.Timedelta(days=365)
-    df = fdr.DataReader("005930", start_point, today)
+    df = fdr.DataReader(stock_code, start_point, today)
     df["ma_60"] = df["Close"].rolling(window=60).mean()
     df["ma_20"] = df["Close"].rolling(window=20).mean()
     df["ma_10"] = df["Close"].rolling(window=10).mean()
@@ -31,7 +35,7 @@ def chart_detail(request):
         width=1000,
         height=625,
         autosize=True,
-        title="삼성전자 (005930)",
+        title="",
         plot_bgcolor="#fafafa",
         xaxis=dict(title="기 간", showgrid=True),
         yaxis=dict(title="주 가", showgrid=True),
@@ -52,9 +56,8 @@ def chart_detail(request):
     fig.add_trace(ema_trace3)
     fig.update_yaxes(fixedrange=False)
     fig.write_html("chart/templates/chart/detail.html")
-    return render(request, "chart/chart_detail.html")
+    return render(request, "chart/chart_detail.html", {"corp": corp})
 
 
-def chart_load(request, corp_code):
-    context = {"corp_code": corp_code}
-    return render(request, "chart/detail.html", context)
+def chart_load(request):
+    return render(request, "chart/detail.html")
