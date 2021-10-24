@@ -8,20 +8,13 @@ from .models import ChartModel
 from .forms import ChartForm
 
 
-def chart_page(request):
-    chart_form = ChartForm()
-    return render(request, "chart/index.html", {"form": chart_form})
-
-
-def chart_detail(request, stock_code):
-    corp = ChartModel.objects.get(stock_code=stock_code)
-
+def get_chart(stock_code, period, moving_average):
     today = pd.Timestamp.today()
-    start_point = today - pd.Timedelta(days=365)
+    start_point = today - pd.Timedelta(days=int(period))
     df = fdr.DataReader(stock_code, start_point, today)
-    df["ma_60"] = df["Close"].rolling(window=60).mean()
-    df["ma_20"] = df["Close"].rolling(window=20).mean()
-    df["ma_10"] = df["Close"].rolling(window=10).mean()
+
+    for ma in moving_average:
+        df[f"ma_{ma}"] = df["Close"].rolling(window=int(ma)).mean()
 
     candle = go.Candlestick(
         x=df.index,
@@ -37,29 +30,42 @@ def chart_detail(request, stock_code):
         width=1000,
         height=625,
         autosize=True,
-        title="",
+        title=f"검색 기간: 최근 {period}일",
         plot_bgcolor="#fafafa",
         xaxis=dict(title="기 간", showgrid=True),
         yaxis=dict(title="주 가", showgrid=True),
     )
-    ema_trace1 = go.Scatter(
-        x=df.index, y=df["ma_10"], mode="lines", name="10일선", line=dict(color="black")
-    )
-    ema_trace2 = go.Scatter(
-        x=df.index, y=df["ma_20"], mode="lines", name="20일선", line=dict(color="green")
-    )
-    ema_trace3 = go.Scatter(
-        x=df.index, y=df["ma_60"], mode="lines", name="60일선", line=dict(color="orange")
-    )
+
+    # ema_trace1 = go.Scatter(
+    #    x=df.index, y=df["ma_10"], mode="lines", name="10일선", line=dict(color="black")
+    # )
 
     fig = go.Figure(data=candle, layout=layout)
-    fig.add_trace(ema_trace1)
-    fig.add_trace(ema_trace2)
-    fig.add_trace(ema_trace3)
+    for ma in moving_average:
+        fig.add_trace(
+            go.Scatter(x=df.index, y=df[f"ma_{ma}"], mode="lines", name=f"{ma}일선")
+        )
     fig.update_yaxes(fixedrange=False)
     fig.write_html("chart/templates/chart/detail.html")
-    return render(request, "chart/chart_detail.html", {"corp": corp})
 
 
-def chart_load(request):
+def chart_page(request):
+    context = {}
+    context["form"] = ChartForm()
+    context["corp"] = None
+    if request.method == "POST":
+        form = ChartForm(request.POST)
+        if form.is_valid():
+            corp_name = request.POST["corp_name"]
+            period = request.POST["period"]
+            moving_average = form.cleaned_data.get("moving_average")
+            corp = ChartModel.objects.get(corp_name=corp_name)
+            stock_code = corp.stock_code
+            get_chart(stock_code, period, moving_average)
+            context["corp"] = corp
+
+    return render(request, "chart/index.html", context=context)
+
+
+def chart_detail(request):
     return render(request, "chart/detail.html")

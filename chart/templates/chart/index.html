@@ -1,7 +1,13 @@
 <h1>차트화면 페이지</h1>
 <a href="{% url 'main-page' %}">메인 페이지로 이동</a>
 
-<form>
-    {{form}}
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
     <input type="submit" value="검색">
 </form>
+
+{% if corp %}
+    <h1>{{ corp.corp_name }} ({{ corp.stock_code }})</h1>
+    <iframe src="{% url 'chart-detail' %}" style="width:80%; height:650px; border: 3px solid">
+    </iframe>
+{% endif %}
