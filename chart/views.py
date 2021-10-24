@@ -36,10 +36,6 @@ def get_chart(stock_code, period, moving_average):
         yaxis=dict(title="주 가", showgrid=True),
     )
 
-    # ema_trace1 = go.Scatter(
-    #    x=df.index, y=df["ma_10"], mode="lines", name="10일선", line=dict(color="black")
-    # )
-
     fig = go.Figure(data=candle, layout=layout)
     for ma in moving_average:
         fig.add_trace(
@@ -59,10 +55,13 @@ def chart_page(request):
             corp_name = request.POST["corp_name"]
             period = request.POST["period"]
             moving_average = form.cleaned_data.get("moving_average")
-            corp = ChartModel.objects.get(corp_name=corp_name)
-            stock_code = corp.stock_code
-            get_chart(stock_code, period, moving_average)
-            context["corp"] = corp
+            try:
+                corp = ChartModel.objects.get(corp_name=corp_name)
+                stock_code = corp.stock_code
+                get_chart(stock_code, period, moving_average)
+                context["corp"] = corp
+            except Exception:
+                pass
 
     return render(request, "chart/index.html", context=context)
 

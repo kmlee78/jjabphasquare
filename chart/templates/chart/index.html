@@ -10,4 +10,6 @@
     <h1>{{ corp.corp_name }} ({{ corp.stock_code }})</h1>
     <iframe src="{% url 'chart-detail' %}" style="width:80%; height:650px; border: 3px solid">
     </iframe>
+{% else %}
+    <p>데이터를 불러올 수 없습니다.</p>
 {% endif %}
