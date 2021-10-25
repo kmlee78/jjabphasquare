@@ -1,3 +1,4 @@
 __pycache__
 chart/templates/chart/detail.html
 *json
+.env
