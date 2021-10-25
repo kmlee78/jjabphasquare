@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import ChartModel
+from main.models import CorpModel
 from .forms import ChartForm
 from .jjabphachart import get_chart
 
@@ -15,7 +15,7 @@ def chart_page(request):
             period = request.POST["period"]
             moving_average = form.cleaned_data.get("moving_average")
             try:
-                corp = ChartModel.objects.get(corp_name=corp_name)
+                corp = CorpModel.objects.get(corp_name=corp_name)
                 stock_code = corp.stock_code
                 get_chart(stock_code, period, moving_average)
                 context["corp"] = corp
@@ -23,7 +23,3 @@ def chart_page(request):
                 pass
 
     return render(request, "chart/index.html", context=context)
-
-
-def chart_detail(request):
-    return render(request, "chart/detail.html")
