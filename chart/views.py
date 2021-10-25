@@ -23,7 +23,3 @@ def chart_page(request):
                 pass
 
     return render(request, "chart/index.html", context=context)
-
-
-def chart_detail(request):
-    return render(request, "chart/detail.html")
