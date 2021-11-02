@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     "main",
     "chart",
     "fs",
-    "community",
     "strategy",
 ]
 

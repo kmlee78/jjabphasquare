@@ -22,5 +22,4 @@ urlpatterns = [
     path("chart/", include("chart.urls")),
     path("fs/", include("fs.urls")),
     path("strategy/", include("strategy.urls")),
-    path("community/", include("community.urls")),
 ]
