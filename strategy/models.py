@@ -49,6 +49,9 @@ class CorpDataQuarter(models.Model):
     operating_margin = models.FloatField(null=True, blank=True)
     borrowing_dependence = models.FloatField(null=True, blank=True)
 
+    def __str__(self):
+        return self.corp_name + self.time_point
+
 
 class CorpDataYear(models.Model):
     corp_name = models.CharField(max_length=20)
@@ -59,3 +62,6 @@ class CorpDataYear(models.Model):
     debt_ratio = models.FloatField(null=True, blank=True)
     operating_margin = models.FloatField(null=True, blank=True)
     borrowing_dependence = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return self.corp_name + self.time_point
