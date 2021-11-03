@@ -1,7 +1,7 @@
 <h1>투자전략 페이지</h1>
 <a href="{% url 'main-page' %}">메인 페이지로 이동</a>
 
-<form method-"get">{% csrf_token %}
+<form method="get">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="선택완료">
 </form>
@@ -9,9 +9,15 @@
 {% if filters %}
     <form method="post">{% csrf_token %}
         {% for filter in filters %}
-        <label for="{{ filter }}">{{ filter }}: </label>
-            <input type="text" id="{{ filter }}">
+            <label for="{{ filter }}">{{ filter }}: </label>
+            <input type="text" id="{{ filter }}" name="{{ filter }}">
         {% endfor %}
+        <label for="start_point">시작 시점: </label>
+        <input type="date" id="start_point" name="start_point">
         <input type="submit" value="백테스팅 시작">
     </form>
+{% endif %}
+
+{% if history %}
+    {{ history }}
 {% endif %}
