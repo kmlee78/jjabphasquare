@@ -1,5 +1,12 @@
 from django.shortcuts import render
+from .forms import FilterForm
 
-# Create your views here.
+
 def filters(request):
-    return render(request, "strategy/index.html")
+    context = {}
+    context["form"] = FilterForm()
+    filter_form = FilterForm(request.GET)
+    if filter_form.is_valid():
+        filters = filter_form.cleaned_data.get("filters")
+        context["filters"] = filters
+    return render(request, "strategy/index.html", context)
