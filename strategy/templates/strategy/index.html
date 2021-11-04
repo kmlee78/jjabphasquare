@@ -10,7 +10,7 @@
     <form method="post">{% csrf_token %}
         {% for filter in filters %}
             <label for="{{ filter }}">{{ filter }}: </label>
-            <input type="text" id="{{ filter }}" name="{{ filter }}">
+            <input type="text" id="{{ filter }}" name="{{ filter }}" required>
         {% endfor %}
         <label for="start_point">시작 시점: </label>
         <input type="date" id="start_point" name="start_point">
@@ -19,5 +19,6 @@
 {% endif %}
 
 {% if history %}
+<h2>추출된 종목들</h2>
     {{ history }}
 {% endif %}
