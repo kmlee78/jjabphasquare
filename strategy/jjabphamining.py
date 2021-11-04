@@ -92,7 +92,11 @@ def get_filter(parameters) -> Dict:
     return filter
 
 
-def get_history(model, parameters, data_to_use) -> Dict:
+def get_history(data_to_use, parameters) -> Dict:
+    if data_to_use == "quarter":
+        model = CorpDataQuarter
+    else:
+        model = CorpDataYear
     history = {}
     filter = get_filter(parameters)
     time_point = pd.Timestamp(filter["start_point"])
@@ -109,13 +113,4 @@ def get_history(model, parameters, data_to_use) -> Dict:
 
     end_point_str = end_point.strftime("%Y-%m-%d")
     history[end_point_str] = ["EOS"]
-    return history
-
-
-def backtest(data_to_use, parameters):
-    if data_to_use == "quarter":
-        model = CorpDataQuarter
-    else:
-        model = CorpDataYear
-    history = get_history(model, parameters, data_to_use)
     return history
