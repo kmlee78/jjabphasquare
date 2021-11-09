@@ -1,41 +1,57 @@
-<h1>투자전략 페이지</h1>
-<a href="{% url 'main-page' %}">메인 페이지로 이동</a>
+{% load static %}
 
-<form method="get">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="선택완료">
-</form>
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'strategy/css/style.css' %}">
+    </head>
+    <body>
 
-{% if filters %}
-    <form method="post">{% csrf_token %}
-        {% for filter in filters %}
-            <label for="{{ filter }}">{{ filter }}: </label>
-            <input type="text" id="{{ filter }}" name="{{ filter }}" required>
-        {% endfor %}
-        <label for="start_point">시작 시점: </label>
-        <input type="date" id="start_point" name="start_point">
-        <input type="submit" value="백테스팅 시작">
-    </form>
-    <p style="color: red">백테스팅에는 어느 정도의 시간이 소요됩니다.</p>
-{% endif %}
+        <h1>투자전략 페이지</h1>
+        <a href="{% url 'main-page' %}">메인 페이지로 이동</a>
 
-{% if history %}
+        <form method="get">{% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="선택완료">
+        </form>
 
-<div style="float:left; width:40%">
-<h2>&lt;추출된 종목들&gt;</h2>
-{% for time_point, corps in history.items %}
-    <h3>{{ time_point }}</h3>
-    <p>
-        {% for corp in corps %}
-            <span>{{ corp }}, </span>
-        {% endfor %}
-    </p>
-{% endfor %}
-</div>
-<div style="float:right; width:60%;">
-    <iframe src="{% url 'strategy-result' %}" style="width: 100%; height:650px;">
-    </iframe>
-    <h3>&lt;백테스팅 평가&gt;</h3>
-    <p>{{ summary }}</p>
-</div>
-{% endif %}
+        {% if filters %}
+            <form method="post">{% csrf_token %}
+                {% for filter in filters %}
+                    <label for="{{ filter }}">{{ filter }}: </label>
+                    <input type="text" id="{{ filter }}" name="{{ filter }}" required>
+                {% endfor %}
+                <label for="start_point">시작 시점: </label>
+                <input type="date" id="start_point" name="start_point">
+                <input id="submit-btn" type="submit" value="백테스팅 시작">
+            </form>
+            <p class="warning">백테스팅에는 어느 정도의 시간이 소요됩니다.</p>
+        {% endif %}
+
+        <div id="loading" class="not-visible">
+            <div class="spinner"></div>
+        </div>
+        {% if history %}
+        <div id="result">
+            <div class="filtered_corps">
+            <h2>&lt;추출된 종목들&gt;</h2>
+            {% for time_point, corps in history.items %}
+                <h3>{{ time_point }}</h3>
+                <p>
+                    {% for corp in corps %}
+                        <span>{{ corp }}, </span>
+                    {% endfor %}
+                </p>
+            {% endfor %}
+            </div>
+            <div class="backtest_result">
+                <iframe src="{% url 'strategy-result' %}" style="width: 100%; height:650px;">
+                </iframe>
+                <h3>&lt;백테스팅 평가&gt;</h3>
+                <p>{{ summary }}</p>
+            </div>
+        </div>
+        {% endif %}
+        <script src="{% static 'strategy/js/index.js' %}"></script>
+    </body>
+</html>
