@@ -16,9 +16,24 @@
         <input type="date" id="start_point" name="start_point">
         <input type="submit" value="백테스팅 시작">
     </form>
+    <p style="color: red">백테스팅에는 어느 정도의 시간이 소요됩니다.</p>
 {% endif %}
 
 {% if history %}
+
+<div style="float:left; width:40%">
 <h2>추출된 종목들</h2>
-    {{ history }}
+{% for time_point, corps in history.items %}
+    <h3>{{ time_point }}</h3>
+    <p>
+        {% for corp in corps %}
+            <span>{{ corp }}, </span>
+        {% endfor %}
+    </p>
+{% endfor %}
+</div>
+<div style="float:right; width:60%;">
+    <iframe src="{% url 'strategy-result' %}" style="width: 100%; height:650px;">
+    </iframe>
+</div>
 {% endif %}

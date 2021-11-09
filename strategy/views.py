@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .forms import FilterForm
 from .jjabphamining import get_history
-from .backtest import rebalanced_inputs
+from .backtest import get_backtest_page
 
 
 def filters(request):
@@ -16,8 +16,9 @@ def filters(request):
             parameters = request.POST
             history = get_history(data_to_use, parameters)
             context["history"] = history
+            get_backtest_page(history)
     return render(request, "strategy/index.html", context)
 
 
 def result(request):
-    pass
+    return render(request, "strategy/detail.html")

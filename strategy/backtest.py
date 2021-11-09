@@ -189,3 +189,9 @@ def rebalanced_inputs(rebalancing_history, benchmark="KS11"):
         benchmark_rtn = pd.concat([benchmark_rtn, brtn_temp])
 
     return portfolio_rtn, benchmark_rtn
+
+
+def get_backtest_page(rebalancing_history):
+    portfolio_rtn, benchmark_rtn = rebalanced_inputs(rebalancing_history)
+    output_path = "strategy/templates/strategy/detail.html"
+    qs.reports.html(portfolio_rtn, benchmark_rtn, output=output_path)
