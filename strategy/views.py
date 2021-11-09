@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .forms import FilterForm
 from .jjabphamining import get_history
 from .backtest import rebalanced_inputs, get_backtest_page
+from .diagnosis import summary
 
 
 def filters(request):
@@ -18,6 +19,8 @@ def filters(request):
             context["history"] = history
             portfolio_rtn, benchmark_rtn = rebalanced_inputs(history)
             get_backtest_page(portfolio_rtn, benchmark_rtn)
+            diagnosis_summary = summary(portfolio_rtn, benchmark_rtn)
+            context["summary"] = diagnosis_summary
     return render(request, "strategy/index.html", context)
 
 
