@@ -191,7 +191,6 @@ def rebalanced_inputs(rebalancing_history, benchmark="KS11"):
     return portfolio_rtn, benchmark_rtn
 
 
-def get_backtest_page(rebalancing_history):
-    portfolio_rtn, benchmark_rtn = rebalanced_inputs(rebalancing_history)
+def get_backtest_page(portfolio_rtn, benchmark_rtn):
     output_path = "strategy/templates/strategy/detail.html"
     qs.reports.html(portfolio_rtn, benchmark_rtn, output=output_path)
