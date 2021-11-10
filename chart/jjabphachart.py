@@ -1,9 +1,18 @@
+from typing import List
+
 import FinanceDataReader as fdr
 import pandas as pd
 import plotly.graph_objects as go
 
 
-def get_chart(stock_code, period, moving_average):
+def get_chart(stock_code: str, period: str, moving_average: List):
+    """정해진 기간에 대한 특정 종목의 차트를 생성한다.
+
+    Args:
+        stock_code: 기업 코드
+        period: 탐색 기간
+        moving_average: 나타낼 이동평균선 리스트
+    """
     today = pd.Timestamp.today()
     start_point = today - pd.Timedelta(days=int(period))
     df = fdr.DataReader(stock_code, start_point, today)

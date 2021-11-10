@@ -20,9 +20,16 @@ QUARTERS = {
 }
 
 
-def _get_report_list(
+def get_report_list(
     code: str, start: datetime.date, end: datetime.date
 ) -> pd.DataFrame:
+    """주어진 기간에 공시된 기업보고서의 리스트를 리턴한다.
+
+    Args:
+        code: 기업 코드
+        start: 기간 시작 날짜
+        end: 기간 끝 날짜
+    """
     start = start.strftime("%Y%m%d")
     end = end.strftime("%Y%m%d")
 
@@ -49,7 +56,12 @@ def _get_report_list(
     return df_data
 
 
-def _get_report_menu(rcept_no: str) -> pd.DataFrame:
+def get_report_menu(rcept_no: str) -> pd.DataFrame:
+    """공시보고서의 상세 리스트를 리턴한다.
+
+    Args:
+        rcept_no: 보고서 번호
+    """
     url = f"{DART_REPORT_URL}/dsaf001/main.do?rcpNo={rcept_no}"
     data = requests.get(url)
 
@@ -70,7 +82,12 @@ def _get_report_menu(rcept_no: str) -> pd.DataFrame:
     return df
 
 
-def _get_account_month(corp_code: str) -> int:
+def get_account_month(corp_code: str) -> int:
+    """기업의 결산월을 리턴한다.
+
+    Args:
+        corp_code: 기업 코드
+    """
     payload = {"corp_code": corp_code}
     url = f"{BASEURL}/company.json"
     api_key = os.getenv("DART_API_KEYS")
@@ -83,11 +100,18 @@ def _get_account_month(corp_code: str) -> int:
 
 
 def get_rcept_no(corp_code: str, bsns_year: int, quarter: int) -> str:
+    """특정 분기에 공시된 기업의 보고서 번호를 리턴한다.
+
+    Args:
+        corp_code: 기업 코드
+        bsns_year: 연도
+        quarter: 분기
+    """
     today = datetime.today()
-    df = _get_report_list(corp_code, datetime(bsns_year - 1, 1, 1), today)
+    df = get_report_list(corp_code, datetime(bsns_year - 1, 1, 1), today)
     if quarter == 4:
         bsns_year += 1
-    month = _get_account_month(corp_code) + quarter * 3
+    month = get_account_month(corp_code) + quarter * 3
     if month > 12:
         month -= 12
     quarter = QUARTERS[quarter]
@@ -107,7 +131,13 @@ def get_rcept_no(corp_code: str, bsns_year: int, quarter: int) -> str:
 
 
 def get_url(rcept_no: str, connected: bool) -> str:
-    report_menu = _get_report_menu(rcept_no)
+    """보고서에서 재무제표가 기록된 페이지의 url을 리턴한다.
+
+    Args:
+        rcept_no: 보고서 번호
+        connected: 재무제표의 연결 여부
+    """
+    report_menu = get_report_menu(rcept_no)
     report_menu["title"] = report_menu["title"].str.replace(r"\([^)]*\)|[^가-힣]", "")
     if connected:
         url = report_menu[report_menu["title"] == "연결재무제표"]["url"].values[0]
