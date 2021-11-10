@@ -1,11 +1,16 @@
-from datetime import time
 from typing import List, Dict
 import pandas as pd
 
 from .models import CorpDataQuarter, CorpDataYear
 
 
-def update_point(time_point, yearly) -> pd.Timestamp:
+def update_point(time_point: pd.Timestamp, yearly: bool) -> pd.Timestamp:
+    """필터를 적용할 시점을 다음 공시보고서 마감 근처일로 변경한다.
+
+    Args:
+        time_point: 필터링 시점
+        yearly: 연간 보고서인지 아닌지
+    """
     year = time_point.year
     month = time_point.month
     if yearly:
@@ -29,7 +34,13 @@ def update_point(time_point, yearly) -> pd.Timestamp:
     return pd.Timestamp(year, month, 1)
 
 
-def point_to_apply(time_point: pd.Timestamp, yearly) -> str:
+def point_to_apply(time_point: pd.Timestamp, yearly: bool) -> str:
+    """필터를 적용할 시점을 공시보고서 마감 근처일로 변경한다.
+
+    Args:
+        time_point: 필터링 시점
+        yearly: 연간 보고서인지 아닌지
+    """
     year = time_point.year
     month = time_point.month
 
@@ -55,7 +66,17 @@ def point_to_apply(time_point: pd.Timestamp, yearly) -> str:
     return time_point
 
 
-def get_stocks(time_point, model, filter, data_to_use) -> List:
+def get_stocks(
+    time_point: pd.Timestamp, model, filter: Dict[str, float], data_to_use: str
+) -> List:
+    """정해진 시점에서 필터링된 종목들의 리스트를 리턴한다.
+
+    Args:
+        time_point: 필터링 시점
+        model: 사용 데이터 모델
+        filter: 필터
+        data_to_use: 사용할 데이터 (분기, 연간)
+    """
     if data_to_use == "quarter":
         time_point = point_to_apply(time_point, yearly=False)
     else:
@@ -81,7 +102,12 @@ def get_stocks(time_point, model, filter, data_to_use) -> List:
     return stocks
 
 
-def get_filter(parameters) -> Dict:
+def get_filter(parameters: Dict[str, str]) -> Dict[str, float]:
+    """입력한 필터 수치를 가공하여 종목 필터를 리턴한다.
+
+    Args:
+        parameters: 입력한 필터 수치
+    """
     filter = {}
     for key in parameters:
         if key != "csrfmiddlewaretoken":
@@ -92,7 +118,13 @@ def get_filter(parameters) -> Dict:
     return filter
 
 
-def get_history(data_to_use, parameters) -> Dict:
+def get_history(data_to_use: str, parameters: Dict[str, str]) -> Dict[str, List]:
+    """시점에 따라 추출된 모든 종목들을 리턴한다.
+
+    Args:
+        data_to_use: 사용할 데이터 (분기, 연간)
+        parameters: 입력한 필터 수치
+    """
     if data_to_use == "quarter":
         model = CorpDataQuarter
     else:
