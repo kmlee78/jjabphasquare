@@ -1,146 +1,112 @@
+from typing import List, Dict, Tuple, Optional
+
 import pandas as pd
 import numpy as np
 import FinanceDataReader as fdr
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
 import quantstats as qs
 
 qs.extend_pandas()
 
 
-def get_price_df(tickers, start_date, end_date=None, is_realtime=True):
-    """Return the adjusted close prices
+def get_price_df(
+    tickers: List[str], start_date: str, end_date: Optional[str] = None
+) -> pd.DataFrame:
+    """수정 주가 데이터를 리턴한다.
+
     Args:
-        tickers (list or str): firms' stock codes
-        start_date (str)
-        end_date (str, optional)
-    Returns:
-        DataFrame: adjusted close price
+        tickers: 종목코드
+        start_date: 탐색 시작 시점
+        end_date: 탐색 종료 시점
     """
-
-    if not is_realtime:
-        if type(tickers) is str:
-            tickers = [tickers]
-        df = pd.read_pickle("Refined_Data/close_prices.pkl")
-        return df.loc[start_date:end_date, tickers]
-
     df = pd.DataFrame()
 
-    if type(tickers) is str:
+    if isinstance(tickers, str):
         tickers = [tickers]
-
     for ticker in tickers:
         df_temp = fdr.DataReader(ticker, start_date, end_date)
         df.loc[:, ticker] = df_temp["Close"]
-
     df.columns = tickers
-
     return df
 
 
-def get_return_df(df_price, log_rtn_flag=False):
-    """Return the daily returns of stocks
+def get_return_df(df_price: pd.DataFrame) -> pd.DataFrame:
+    """일간 수익률을 리턴한다.
 
     Args:
-        df_price (DataFrame): Adjusted close prices of stocks
-        log_rtn_flag (bool): if true, calculate log returns
-
-    Returns:
-        DataFrame: daily stocks returns
+        df_price: 수정 주가 데이터
     """
-
-    if log_rtn_flag:
-        df_return = np.log(df_price) - np.log(df_price.shift())  # calculate log return
-    else:
-        df_return = df_price.pct_change().fillna(0)  # calculate return
-
+    df_return = df_price.pct_change().fillna(0)
     return df_return
 
 
-def get_portfolio_return(df_price):
-    """Return the daily returns of Buy-and-Hold portfolio
-    Args:
-        df_price (DataFrame): Adjusted close prices of stocks
-    Returns:
-        Series: daily returns of Buy-and-hold portfolio
-    """
+def get_portfolio_return(df_price: pd.DataFrame) -> pd.Series:
+    """포트폴리오 누적 수익률을 계산한다.
 
-    df_cum_rtn = (df_price - df_price.iloc[0]) / df_price.iloc[0]  # 종목별 누적수익률 계산
-    portfolio_cum_rtn = df_cum_rtn.mean(axis=1)  # 포트폴리오 누적수익률 계산
-    # 포트폴리오 일간수익률 계산
+    Args:
+        df_price: 수정 주가에 대한 데이터
+    """
+    df_cum_rtn = (df_price - df_price.iloc[0]) / df_price.iloc[0]
+    portfolio_cum_rtn = df_cum_rtn.mean(axis=1)
     portfolio_rtn = (portfolio_cum_rtn + 1) / (portfolio_cum_rtn.shift(1) + 1) - 1
 
     return portfolio_rtn
 
 
-def names_to_tickers(names, market="KRX"):
-    """Convert names to tickers
+def names_to_tickers(names: str, market: str = "KRX") -> List[str]:
+    """종목명을 종목 코드로 변환한다.
 
     Args:
-        names (list): firms' names
-        market (str, optional): Stock Exchange
-
-    Returns:
-        list: firms' tickers
+        names: 종목명
+        market: 거래 시장 심볼
     """
-
-    Stocklist = fdr.StockListing(market)  # dataframe containing ticker and names
-    mask = Stocklist["Name"].isin(names)  # filtering
+    Stocklist = fdr.StockListing(market)
+    mask = Stocklist["Name"].isin(names)
 
     return Stocklist[mask]["Symbol"].tolist()
 
 
 def prepare_inputs(
-    start_date,
-    end_date=None,
-    names=None,
-    tickers=None,
+    start_date: str,
+    end_date: Optional[str] = None,
+    names: Optional[str] = None,
+    tickers: Optional[str] = None,
     benchmark="KS11",
-    is_realtime=True,
-):
-    """Prepare inputs for quantstats reports with buy-and-hold strategy,
+) -> Tuple[pd.Series, pd.Series]:
+    """리밸런싱 전략을 적용하지 않았을 때(보유 종목이 변하지 않았을 때) 일간 수익률을 리턴한다.
 
     Args:
-        start_date (str)
-        end_date (str, optional)
-        names (list, optional): firms' names. Either names or tickers are required
-        tickers (list, optional): firms' tickers. Either names or tickers are required
-        benchmark (str, optional): symbol of benchmark
-
-    Returns:
-        portfolio_rtn (Series): Daily returns of portfolio
-        benchmark_rtn (Series): Daily returns of benchmark
+        start_date: 시작 시점
+        end_date: 종료 시점
+        names: 종목명
+        tickers: 종목 코드
+        benchmark: 벤치마크 심볼
     """
-
     if names is not None:
         tickers = names_to_tickers(names)
     elif tickers is None:
         raise Exception("Either names or tickers are needed")
 
     df_price = get_price_df(tickers, start_date, end_date)
-    portfolio_rtn = get_portfolio_return(df_price).iloc[1:]  # drop first row
+    portfolio_rtn = get_portfolio_return(df_price).iloc[1:]
 
-    benchmark_price = get_price_df(benchmark, start_date, end_date, is_realtime)
-    benchmark_rtn = get_return_df(benchmark_price).iloc[1:].squeeze()  # drop first row
+    benchmark_price = get_price_df(benchmark, start_date, end_date)
+    benchmark_rtn = get_return_df(benchmark_price).iloc[1:].squeeze()
 
     return portfolio_rtn, benchmark_rtn
 
 
-def holding_cash(start_date, end_date=None, benchmark="KS11", is_realtime=True):
-    """Prepare inputs for quantstats reports with cash-holding strategy,
-    Args:
-        start_date (str)
-        end_date (str, optional)
-        benchmark (str, optional): symbol of benchmark
-        is_realtime (bool, optional): until today or not
-    Returns:
-        portfolio_rtn (Series): Daily returns of portfolio
-                                (in this case, return nan series)
-        benchmark_rtn (Series): Daily returns of benchmark
-    """
+def holding_cash(
+    start_date: str, end_date: Optional[str] = None, benchmark: str = "KS11"
+) -> Tuple[pd.Series, pd.Series]:
+    """리밸런싱 없이 현금만을 보유하고 있을 때 일간 수익률을 리턴한다.
 
-    benchmark_price = get_price_df(benchmark, start_date, end_date, is_realtime)
-    benchmark_rtn = get_return_df(benchmark_price).iloc[1:].squeeze()  # drop first row
+    Args:
+        start_date: 시작 시점
+        end_date: 종료 시점
+        benchmark: 벤치마크 심볼
+    """
+    benchmark_price = get_price_df(benchmark, start_date, end_date)
+    benchmark_rtn = get_return_df(benchmark_price).iloc[1:].squeeze()
 
     portfolio_rtn = benchmark_rtn.copy()
     portfolio_rtn.iloc[:] = np.nan
@@ -148,35 +114,26 @@ def holding_cash(start_date, end_date=None, benchmark="KS11", is_realtime=True):
     return portfolio_rtn, benchmark_rtn
 
 
-def rebalanced_inputs(rebalancing_history, benchmark="KS11"):
-    """Prepare inputs for quantstats reports with rebalancing strategy
+def rebalanced_inputs(
+    rebalancing_history: Dict[str, List[str]], benchmark: str = "KS11"
+) -> Tuple[pd.Series, pd.Series]:
+    """리밸런싱 전략에 따른 일간 수익률을 벤치마크(코스피)와 함께 리턴한다.
 
     Args:
-        rebalancing_history (dict): key = rebalancing dates,
-                                    value = rebalanced stocks
-        benchmark (str, optional): symbol of benchmark
-
-    Returns:
-        portfolio_rtn (Series): Daily returns of portfolio
-        benchmark_rtn (Series): Daily returns of benchmark
+        rebalancing_history: 시점에 따라 리스트로 정리된 종목들
+        benchmark: 벤치마크 심볼
     """
-
     portfolio_rtn = pd.Series(dtype="float64")
     benchmark_rtn = pd.Series(dtype="float64")
 
     dates = list(rebalancing_history.keys())
 
-    is_realtime = False if rebalancing_history[dates[-1]] == ["EOS"] else True
-
     for idx, start_date in enumerate(dates):
-        if not idx == len(dates) - 1:
+        if idx != len(dates) - 1:
             end_date = dates[idx + 1]
         else:
-            if not is_realtime:
-                break
-            else:
-                end_date = None
-        if not rebalancing_history[start_date]:  # if filtered nothing(empty list)
+            break
+        if not rebalancing_history[start_date]:
             prtn_temp, brtn_temp = holding_cash(start_date, end_date)
         else:
             prtn_temp, brtn_temp = prepare_inputs(
@@ -191,6 +148,7 @@ def rebalanced_inputs(rebalancing_history, benchmark="KS11"):
     return portfolio_rtn, benchmark_rtn
 
 
-def get_backtest_page(portfolio_rtn, benchmark_rtn):
+def get_backtest_page(portfolio_rtn: pd.Series, benchmark_rtn: pd.Series):
+    """백테스팅 결과 페이지를 생성한다."""
     output_path = "strategy/templates/strategy/detail.html"
     qs.reports.html(portfolio_rtn, benchmark_rtn, output=output_path)
