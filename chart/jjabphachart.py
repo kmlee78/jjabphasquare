@@ -45,5 +45,9 @@ def get_chart(stock_code: str, period: str, moving_average: List):
         fig.add_trace(
             go.Scatter(x=df.index, y=df[f"ma_{ma}"], mode="lines", name=f"{ma}일선")
         )
+    dt_all = pd.date_range(df.index[0], df.index[-1])
+    dt_breaks = [day for day in dt_all if not day in df.index]
+
     fig.update_yaxes(fixedrange=False)
+    fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
     fig.write_html("chart/templates/chart/detail.html")
