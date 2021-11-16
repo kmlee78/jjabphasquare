@@ -5,8 +5,8 @@
     <head>
         <link rel="stylesheet" href="{% static 'strategy/css/style.css' %}">
     </head>
-    <body>
 
+    <body>
         <h1>투자전략 페이지</h1>
         <a href="{% url 'main-page' %}">메인 페이지로 이동</a>
 
@@ -16,20 +16,39 @@
         </form>
 
         {% if filters %}
-            <form method="post">{% csrf_token %}
-                {% for filter in filters %}
-                    <label for="{{ filter }}">{{ filter }}: </label>
-                    <input type="text" id="{{ filter }}" name="{{ filter }}" required>
-                {% endfor %}
-                <label for="start_point">시작 시점: </label>
-                <input type="date" id="start_point" name="start_point">
-                <input id="submit-btn" type="submit" value="백테스팅 시작">
-            </form>
-            <p class="warning">백테스팅에는 어느 정도의 시간이 소요됩니다.</p>
+            <div class="backtest-form">
+                <form method="post">{% csrf_token %}
+                    {% for filter in filters %}
+                        <label for="{{ filter }}">{{ filter }}: </label>
+                        <input type="text" id="{{ filter }}" name="{{ filter }}" required>
+                    {% endfor %}
+                    <label for="start_point">시작 시점: </label>
+                    <input type="date" id="start_point" name="start_point">
+                    <input id="submit-btn" type="submit" value="백테스팅 시작">
+                </form>
+            </div>
+            <button id="modal-btn">백테스팅 원리</button>
+            <div id="modal">
+                <p>대부분 기업들의 재무제표 결산일을 투자 포트폴리오의 리밸런싱 기간으로 하는 전략을 적용합니다.</p>
+                <p>리밸런싱 시기는 다음과 같습니다.</p>
+                <ul>
+                    분기별 재무제표 데이터 사용
+                    <li>1분기 보고서: 6월 1일</li>
+                    <li>반기 보고서: 9월 1일</li>
+                    <li>3분기 보고서: 12월 1일</li>
+                    <li>작년 사업보고서: 4월 1일</li>
+                </ul>
+                <ul>
+                    연간 재무제표 데이터 사용
+                    <li>사업보고서 결산일 기준인 4월 1일</li>
+                </ul>
+                <a class="modal-close-btn">닫기</a>
+            </div>
         {% endif %}
 
         <div id="loading" class="not-visible">
             <div class="spinner"></div>
+            <p class="warning">백테스팅에는 어느 정도의 시간이 소요됩니다.</p>
         </div>
         {% if history %}
         <div id="result">
