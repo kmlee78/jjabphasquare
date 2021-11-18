@@ -54,7 +54,7 @@ def get_portfolio_return(df_price: pd.DataFrame) -> pd.Series:
     return portfolio_rtn
 
 
-def names_to_tickers(names: Optional[str], market: str = "KRX") -> List[str]:
+def names_to_tickers(names: Optional[str]) -> List[str]:
     """종목명을 종목 코드로 변환한다.
 
     Args:
