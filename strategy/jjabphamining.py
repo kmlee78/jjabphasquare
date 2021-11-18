@@ -144,5 +144,5 @@ def get_history(data_to_use: str, parameters: Dict[str, str]) -> Dict[str, List]
             time_point = update_point(time_point, yearly=True)
 
     end_point_str = end_point.strftime("%Y-%m-%d")
-    history[end_point_str] = ["EOS"]
+    history[end_point_str] = []
     return history
