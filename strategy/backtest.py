@@ -5,6 +5,8 @@ import numpy as np
 import FinanceDataReader as fdr
 import quantstats as qs
 
+from main.models import CorpModel
+
 qs.extend_pandas()
 
 
@@ -52,17 +54,21 @@ def get_portfolio_return(df_price: pd.DataFrame) -> pd.Series:
     return portfolio_rtn
 
 
-def names_to_tickers(names: str, market: str = "KRX") -> List[str]:
+def names_to_tickers(names: Optional[str], market: str = "KRX") -> List[str]:
     """종목명을 종목 코드로 변환한다.
 
     Args:
         names: 종목명
         market: 거래 시장 심볼
     """
-    Stocklist = fdr.StockListing(market)
-    mask = Stocklist["Name"].isin(names)
-
-    return Stocklist[mask]["Symbol"].tolist()
+    tickers = []
+    for name in names:
+        try:
+            stock_code = CorpModel.objects.get(corp_name=name).stock_code
+            tickers.append(stock_code)
+        except Exception:
+            continue
+    return tickers
 
 
 def prepare_inputs(
