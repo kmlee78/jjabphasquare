@@ -1,0 +1,55 @@
+@font-face {
+  font-family: "jinji";
+  src: url("../font/ChosunGs.TTF");
+}
+
+body {
+  font-family: "jinji";
+  background-image: url("../images/bonobono.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.title {
+  height: 20%;
+  text-align: center;
+  margin-bottom: 5%;
+}
+
+.title h1 {
+  font-size: 50px;
+}
+.title a {
+  text-decoration: none;
+  color: black;
+}
+
+.back {
+  display: block;
+  position: relative;
+  left: 65%;
+  width: 200px;
+  font-size: 20px;
+  border: solid 1px aqua;
+  background-color: aqua;
+}
+
+.chart-form {
+  width: 30%;
+  margin: auto;
+  border: solid 2px teal;
+  background-color: teal;
+  opacity: 0.9;
+  border-radius: 10px;
+}
+
+.chart-element {
+  width: 50%;
+  margin: auto;
+  font-weight: bolder;
+}
+
+.chart {
+  text-align: center;
+  margin: auto;
+}

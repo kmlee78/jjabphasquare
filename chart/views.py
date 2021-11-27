@@ -8,7 +8,9 @@ def chart_page(request):
     context = {}
     context["form"] = ChartForm()
     context["corp"] = None
+    context["post_received"] = False
     if request.method == "POST":
+        context["post_received"] = True
         form = ChartForm(request.POST)
         if form.is_valid():
             corp_name = request.POST["corp_name"]

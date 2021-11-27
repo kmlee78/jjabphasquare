@@ -1,15 +1,38 @@
-<h1>차트화면 페이지</h1>
-<a href="{% url 'main-page' %}">메인 페이지로 이동</a>
+{% load static %}
 
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="검색">
-</form>
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'chart/css/style.css' %}">
+    </head>
 
-{% if corp %}
-    <h1>{{ corp.corp_name }} ({{ corp.stock_code }})</h1>
-    <iframe src="{% url 'chart-detail' %}" style="width:80%; height:650px; border: 3px solid">
-    </iframe>
-{% else %}
-    <p>데이터를 불러올 수 없습니다.</p>
-{% endif %}
+    <body>
+        <div class="title">
+            <a href="{% url 'chart-page' %}"><h1>주가 차트 분석 페이지</h1></a>
+            <a class="back" href="{% url 'main-page' %}">메인 페이지로 이동</a>
+        </div>
+        <div class="chart-form">
+            <div class = "chart-element">
+                <form method="post">{% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="검색">
+                </form>
+            </div>
+        </div>
+        <div class="chart">
+            {% if corp %}
+                <div class="chart-box">
+                    <h1>{{ corp.corp_name }} ({{ corp.stock_code }})</h1>
+                    <iframe src="{% url 'chart-detail' %}" onload="resizeIframe(this)">
+                    </iframe>
+                </div>
+            {% else %}
+                <p>현재 표시된 차트가 없습니다.</p>
+            {% endif %}
+            {% if post_received %}
+                <div class="post-received"></div>
+            {% endif %}
+        </div>
+        <script src="{% static 'chart/js/index.js' %}"></script>
+    </body>
+</html>
