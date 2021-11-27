@@ -8,7 +8,9 @@ def fs_page(request):
     context = {}
     context["form"] = FSForm()
     context["url"] = None
+    context["post_received"] = False
     if request.method == "POST":
+        context["post_received"] = True
         form = FSForm(request.POST)
         if form.is_valid():
             corp_name = form.cleaned_data.get("corp_name")
