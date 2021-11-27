@@ -1,0 +1,61 @@
+@font-face {
+  font-family: "jinji";
+  src: url("../font/ChosunGs.TTF");
+}
+
+body {
+  background-image: url("../images/bonobono.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.title {
+  height: 20%;
+  text-align: center;
+  margin-bottom: 10%;
+}
+
+.title h1 {
+  font-family: "jinji";
+  font-size: 50px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  height: 300px;
+}
+
+.item {
+  height: 300px;
+  line-height: 300px;
+  width: 300px;
+  background-color: brown;
+  opacity: 0.8;
+  border-radius: 10%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.box_1 {
+  background-color: blue;
+}
+.box_2 {
+  background-color: crimson;
+}
+.box_3 {
+  background-color: lawngreen;
+}
+
+.linkbox {
+  text-decoration: none;
+  font-weight: bolder;
+  font-size: 150%;
+  font-family: "jinji";
+  color: black;
+}
+
+.item:hover {
+  box-shadow: 0 0 20px gray;
+}

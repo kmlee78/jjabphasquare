@@ -1,4 +1,25 @@
-<h1>메인화면 페이지</h1>
-<a href="{% url 'chart-page' %}">차트 페이지로 이동</a>
-<a href="{% url 'fs-page' %}">재무정보 페이지로 이동</a>
-<a href="{% url 'strategy-page' %}">투자전략 페이지로 이동</a>
+{% load static %}
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    </head>
+
+    <body>
+        <div class= "title">
+            <h1>건강한 투자의 첫걸음, 짭파스퀘어에 오신 것을 환영합니다!</h1>
+        </div>
+        <div class="container">
+            <a class="linkbox" href="{% url 'chart-page' %}">
+                <div class="item box_1">차트 페이지로 이동</div>
+            </a>
+            <a class="linkbox" href="{% url 'fs-page' %}">
+                <div class="item box_2">재무정보 페이지로 이동</div>
+            </a>
+            <a class="linkbox" href="{% url 'strategy-page' %}">
+                <div class="item box_3">투자전략 페이지로 이동</div>
+            </a>
+        </div>
+    </body>
+</html>
