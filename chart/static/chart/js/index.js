@@ -1,4 +1,3 @@
-const form = document.querySelector("form");
 const chart_box = document.querySelector(".chart-box");
 const post_received = document.querySelector(".post-received");
 
