@@ -1,7 +1,9 @@
 const loading = document.querySelector("#loading");
 const submit_btn = document.querySelector("#submit-btn");
 const result = document.querySelector("#result");
-const modal_btn = document.querySelector("#modal-btn")
+const modal_btn = document.querySelector("#modal-btn");
+const index_modal_btn = document.querySelector("#index-modal-btn");
+const backtest_values = document.querySelectorAll(".backtest-input input");
 
 submit_btn.addEventListener("click", function(e){
     loading.classList.remove("not-visible");
@@ -52,4 +54,7 @@ Element.prototype.setStyle = function(styles) {
 
 modal_btn.addEventListener("click", function() {
     modal("modal");
+});
+index_modal_btn.addEventListener("click", function() {
+    modal("index-modal");
 });

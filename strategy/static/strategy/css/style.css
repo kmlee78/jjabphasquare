@@ -1,7 +1,18 @@
+@font-face {
+  font-family: "jinji";
+  src: url("../font/ChosunGs.TTF");
+}
+
 @keyframes spinner {
   to {
     transform: rotate(360deg);
   }
+}
+
+body {
+  background-image: url("../images/bonobono.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .spinner:before {
@@ -20,8 +31,81 @@
   animation: spinner 0.6s linear infinite;
 }
 
+.title {
+  font-family: "jinji";
+  height: 20%;
+  text-align: center;
+  margin-bottom: 5%;
+}
+
+.title h1 {
+  font-size: 50px;
+}
+.title a {
+  text-decoration: none;
+  color: black;
+}
+
+.back {
+  display: block;
+  position: relative;
+  left: 65%;
+  width: 200px;
+  font-size: 20px;
+  border: solid 1px aqua;
+  background-color: aqua;
+}
+
+.filter-form {
+  float: left;
+  width: 30%;
+  position: relative;
+  left: 15%;
+  border: solid 2px teal;
+  background-color: teal;
+  opacity: 0.9;
+  border-radius: 10px;
+  margin-bottom: 3%;
+}
+
+.filter-element {
+  font-family: "jinji";
+  width: 50%;
+  margin: auto;
+  font-weight: bolder;
+}
+
+.backtest-form {
+  float: right;
+  height: 290px;
+  position: relative;
+  right: 15%;
+  width: 30%;
+  border: solid 2px silver;
+  background-color: silver;
+  opacity: 0.9;
+  font-family: "jinji";
+  border-radius: 10px;
+  font-weight: bolder;
+}
+
+.backtest-input {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.modal-btns {
+  width: 10%;
+  margin: auto;
+}
+.modal-btns button {
+  margin: auto;
+}
+
 .warning {
   color: red;
+  text-align: center;
+  font-weight: bolder;
 }
 
 .filtered_corps {
@@ -42,7 +126,8 @@
   background-color: gray;
 }
 
-#modal {
+#modal,
+#index-modal {
   display: none;
   width: 300px;
   padding: 20px 60px;
@@ -55,4 +140,14 @@
   position: absolute;
   top: 10px;
   right: 10px;
+}
+
+#index-modal .modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.summary {
+  border: 2px dotted black;
 }

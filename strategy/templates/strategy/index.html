@@ -7,69 +7,96 @@
     </head>
 
     <body>
-        <h1>투자전략 페이지</h1>
-        <a href="{% url 'main-page' %}">메인 페이지로 이동</a>
-
-        <form method="get">{% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="선택완료">
-        </form>
+        <div class="title">
+            <a href="{% url 'strategy-page' %}"><h1>투자전략 구상 페이지</h1></a>
+            <a class="back" href="{% url 'main-page' %}">메인 페이지로 이동</a>
+        </div>
+        <div class="filter-form">
+            <div class="filter-element">
+                <form method="get">{% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="선택완료">
+                </form>
+            </div>
+        </div>
 
         {% if filters %}
             <div class="backtest-form">
                 <form method="post">{% csrf_token %}
                     {% for filter in filters %}
+                    <div class="backtest-input">
                         <label for="{{ filter }}">{{ filter }}: </label>
                         <input type="text" id="{{ filter }}" name="{{ filter }}" required>
+                    </div>
                     {% endfor %}
-                    <label for="start_point">시작 시점: </label>
-                    <input type="date" id="start_point" name="start_point">
+                    <div class="backtest-input">
+                        <label for="start_point">시작 시점: </label>
+                        <input type="date" id="start_point" name="start_point">
+                    </div>
                     <input id="submit-btn" type="submit" value="백테스팅 시작">
                 </form>
             </div>
-            <button id="modal-btn">백테스팅 원리</button>
-            <div id="modal">
-                <p>대부분 기업들의 재무제표 결산일을 투자 포트폴리오의 리밸런싱 기간으로 하는 전략을 적용합니다.</p>
-                <p>리밸런싱 시기는 다음과 같습니다.</p>
-                <ul>
-                    분기별 재무제표 데이터 사용
-                    <li>1분기 보고서: 6월 1일</li>
-                    <li>반기 보고서: 9월 1일</li>
-                    <li>3분기 보고서: 12월 1일</li>
-                    <li>작년 사업보고서: 4월 1일</li>
-                </ul>
-                <ul>
-                    연간 재무제표 데이터 사용
-                    <li>사업보고서 결산일 기준인 4월 1일</li>
-                </ul>
-                <a class="modal-close-btn">닫기</a>
+            <div style="clear: both;"></div>
+            <div class="modal-btns">
+                <button id="index-modal-btn">지표 설명</button>
+                <button id="modal-btn">백테스팅 원리</button>
             </div>
         {% endif %}
+
+        <div id="index-modal">
+            <ul>
+                <li><b>PBR</b>: <b>(주가)/(1주당 순자산)</b> 으로, 낮을수록 저평가된 회사를 의미한다. 일반적으로 10 이하일 경우 저 PER종목으로 분류된다.</li>
+                <li><b>PER</b>: <b>(주가)/(1주당 당기순이익)</b> 으로, 주가가 한 주당 몇 배로 매매되고 있는지를 보기 위한 주가기준으로, 낮을 수록 저평가된 회사를 의미한다.</li>
+                <li><b>ROE</b>: <b>(당기순이익)/(자본총계) * 100(%)</b> 으로, 기업의 수익성을 나타재는 지표이며 높을수록 기업이 높은 수익성을 가진다는 것을 의미한다.</li>
+                <li><b>부채비율</b>: <b>(부채총계)/(자본총계)</b> 으로, 일반적으로 100% 이하면 매우 안정, 100%~200% 정도면 비교적 안정, 그 위로 갈수록 부채에 대한 위험도가 높은 기업으로 간주된다.</li>
+                <li><b>영업이익률</b>: <b>(영업이익)/(매출액) * 100(%)</b> 으로, 매출액에 대한 영업이익의 비율을 나타내는 지표이다. 기업 자체의 업적평가를 알 수 있는 수익성지표다.</li>
+                <li><b>차입금의존도</b>: <b>(차입금)/(총자본) * 100(%)</b> 으로, 기업의 부채상환능력을 알 수 있는 지표이다. 일반적으로 30% 이상이면 재무적으로 문제가 있다고 판단한다.</li>
+            </ul>
+            <a class="modal-close-btn">닫기</a>
+        </div>
+        <div id="modal">
+            <p>대부분 기업들의 재무제표 결산일을 투자 포트폴리오의 리밸런싱 기간으로 하는 전략을 적용합니다.</p>
+            <p>리밸런싱 시기는 다음과 같습니다.</p>
+            <ul>
+                &lt;분기별 재무제표 데이터 사용&gt;
+                <li><b>1분기 보고서</b>: 6월 1일</li>
+                <li><b>반기 보고서</b>: 9월 1일</li>
+                <li><b>3분기 보고서</b>: 12월 1일</li>
+                <li><b>작년 사업보고서</b>: 4월 1일</li>
+            </ul>
+            <ul>
+                &lt;연간 재무제표 데이터 사용&gt;
+                <li><b>사업보고서 결산일 기준인 4월 1일</b></li>
+            </ul>
+            <a class="modal-close-btn">닫기</a>
+        </div>
 
         <div id="loading" class="not-visible">
             <div class="spinner"></div>
             <p class="warning">백테스팅에는 어느 정도의 시간이 소요됩니다.</p>
         </div>
         {% if history %}
-        <div id="result">
-            <div class="filtered_corps">
-            <h2>&lt;추출된 종목들&gt;</h2>
-            {% for time_point, corps in history.items %}
-                <h3>{{ time_point }}</h3>
-                <p>
-                    {% for corp in corps %}
-                        <span>{{ corp }}, </span>
+            <div id="result">
+                <div class="filtered_corps">
+                    <h2>&lt;추출된 종목들&gt;</h2>
+                    {% for time_point, corps in history.items %}
+                        <h3>{{ time_point }}</h3>
+                        <p>
+                            {% for corp in corps %}
+                                <span>{{ corp }}, </span>
+                            {% endfor %}
+                        </p>
                     {% endfor %}
-                </p>
-            {% endfor %}
+                </div>
+                <div class="backtest_result">
+                    <iframe src="{% url 'strategy-result' %}" style="width: 100%; height:650px;">
+                    </iframe>
+                    <div class="summary">
+                        <h3>&lt;백테스팅 평가&gt;</h3>
+                        <p>{{ summary }}</p>
+                    </div>
+                </div>
             </div>
-            <div class="backtest_result">
-                <iframe src="{% url 'strategy-result' %}" style="width: 100%; height:650px;">
-                </iframe>
-                <h3>&lt;백테스팅 평가&gt;</h3>
-                <p>{{ summary }}</p>
-            </div>
-        </div>
         {% endif %}
         <script src="{% static 'strategy/js/index.js' %}"></script>
     </body>
