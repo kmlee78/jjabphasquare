@@ -1,0 +1,7 @@
+django==2.2
+pandas
+finance-datareader
+quantstats
+beautifulsoup4
+python-dotenv
+plotly
