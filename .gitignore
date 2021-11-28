@@ -1,5 +1,5 @@
 __pycache__
 chart/templates/chart/detail.html
 *json
-.env
 strategy/templates/strategy/detail.html
+.python-version
