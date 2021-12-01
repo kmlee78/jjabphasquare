@@ -9,7 +9,7 @@
     <body>
         <div class="title">
             <a href="{% url 'chart-page' %}"><h1>주가 차트 분석 페이지</h1></a>
-            <a class="back" href="{% url 'main-page' %}">메인 페이지로 이동</a>
+            <a class="back" href="{% url 'main-page' %}"><span>메인 페이지로 이동</span></a>
         </div>
         <div class="chart-form">
             <div class = "chart-element">
@@ -27,7 +27,7 @@
                     </iframe>
                 </div>
             {% else %}
-                <p>현재 표시된 차트가 없습니다.</p>
+                <p class="no-data">현재 표시된 차트가 없습니다.</p>
             {% endif %}
             {% if post_received %}
                 <div class="post-received"></div>

@@ -9,7 +9,7 @@
     <body>
         <div class="title">
             <a href="{% url 'fs-page' %}"><h1>재무정보 열람 페이지</h1></a>
-            <a class="back" href="{% url 'main-page' %}">메인 페이지로 이동</a>
+            <a class="back" href="{% url 'main-page' %}"><span>메인 페이지로 이동</span></a>
         </div>
         <div class="fs-form">
             <div class="fs-element">
@@ -27,7 +27,7 @@
                 </iframe>
             </div>
             {% else %}
-                <p>데이터를 불러올 수 없습니다.</p>
+                <p class="no-data">데이터를 불러올 수 없습니다.</p>
             {% endif %}
             {% if post_received %}
                 <div class="post-received"></div>

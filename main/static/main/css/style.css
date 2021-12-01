@@ -1,10 +1,5 @@
-@font-face {
-  font-family: "jinji";
-  src: url("../font/ChosunGs.TTF");
-}
-
 body {
-  background-image: url("../images/bonobono.jpg");
+  background-image: url("../images/team_collaboration.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -16,7 +11,6 @@ body {
 }
 
 .title h1 {
-  font-family: "jinji";
   font-size: 50px;
 }
 

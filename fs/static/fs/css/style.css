@@ -1,11 +1,5 @@
-@font-face {
-  font-family: "jinji";
-  src: url("../font/ChosunGs.TTF");
-}
-
 body {
-  font-family: "jinji";
-  background-image: url("../images/bonobono.jpg");
+  background-image: url("../images/team_collaboration.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -30,8 +24,15 @@ body {
   left: 65%;
   width: 200px;
   font-size: 20px;
-  border: solid 1px aqua;
-  background-color: aqua;
+  border: solid 1px black;
+  background-color: black;
+  border-radius: 8px;
+  padding: 8px 8px;
+  font-weight: 500;
+}
+
+.back span {
+  color: white;
 }
 
 .fs-form {
@@ -52,4 +53,8 @@ body {
 .fs {
   text-align: center;
   margin: auto;
+}
+
+.no-data {
+  color: red;
 }
