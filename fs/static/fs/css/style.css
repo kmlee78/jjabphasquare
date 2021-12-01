@@ -35,6 +35,10 @@ body {
   color: white;
 }
 
+.back:hover {
+  box-shadow: 0 0 20px gray;
+}
+
 .fs-form {
   width: 30%;
   margin: auto;
@@ -53,6 +57,9 @@ body {
 .fs {
   text-align: center;
   margin: auto;
+}
+.fs-box h1 {
+  color: red;
 }
 
 .no-data {

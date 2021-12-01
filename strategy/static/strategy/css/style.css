@@ -57,6 +57,10 @@ body {
   color: white;
 }
 
+.back:hover {
+  box-shadow: 0 0 20px gray;
+}
+
 .filter-form {
   float: left;
   width: 30%;
