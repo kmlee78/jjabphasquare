@@ -59,6 +59,10 @@ body {
   margin: auto;
 }
 
+.chart-box h1 {
+  color: red;
+}
+
 .no-data {
   color: red;
 }
